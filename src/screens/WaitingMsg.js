@@ -14,7 +14,9 @@ import MessageItem from "../components/MessageItem";
 import { AntDesign } from "@expo/vector-icons";
 
 const WaitingMsg = ({ navigation }) => {
-  const { messages, getUserMessages, loading } = useContext(AppContext);
+  const { messages, getUserMessages, loading, setMessages } = useContext(
+    AppContext
+  );
   useEffect(() => {
     getUserMessages();
   }, []);
@@ -25,7 +27,12 @@ const WaitingMsg = ({ navigation }) => {
         <View style={styles.navBG}>
           <View style={styles.navBtnMiddle}>
             <View style={styles.navBtnMiddleView}>
-            <Text style={styles.numText}>{messages ? messages.length : '0'}</Text>
+              <View style={styles.numText}>
+                <Text style={styles.numberTextInView}>
+                  {messages ? messages.length : "0"}
+                </Text>
+              </View>
+
               <Text style={styles.navLink}>ממתינות לשילוח</Text>
             </View>
           </View>
@@ -33,27 +40,25 @@ const WaitingMsg = ({ navigation }) => {
       </SafeAreaView>
       <View style={styles.screenBG}>
         <View style={styles.screenBGinner}>
-           {messages ? (
-             
-                     <FlatList
-            data={messages}
-            renderItem={({ item }) => {
-              return <MessageItem navigation={navigation} item={item} />;
-            }}
-            keyExtractor={(item) => item._id}
-          /> 
-         
-   
-        ) : <Text style={styles.noMSGtext}>אין הודעות ממתינות</Text>}
+          {messages !== 0 ? (
+            <FlatList
+              data={messages}
+              renderItem={({ item }) => {
+                return <MessageItem navigation={navigation} item={item} />;
+              }}
+              keyExtractor={(item) => item.message_id}
+            />
+          ) : (
+            <Text style={styles.noMSGtext}>אין הודעות ממתינות</Text>
+          )}
         </View>
-       
+
         {loading && (
           <View style={styles.screenBG}>
             <ActivityIndicator size="large" color="#00ff00" />
           </View>
         )}
         <View style={styles.backView}>
-          <Text style={styles.backText}>חזור</Text>
           <TouchableOpacity
             style={styles.backBtn}
             onPress={() => navigation.push("Profile")}
@@ -62,6 +67,7 @@ const WaitingMsg = ({ navigation }) => {
               <AntDesign name="right" size={24} color="white" />
             </Text>
           </TouchableOpacity>
+          <Text style={styles.backText}>חזור</Text>
         </View>
       </View>
     </>
@@ -70,12 +76,11 @@ const WaitingMsg = ({ navigation }) => {
 const styles = StyleSheet.create({
   screenBG: {
     backgroundColor: "#121212",
-    flexDirection: 'column',
+    flexDirection: "column",
     flex: 1,
   },
   screenBGinner: {
     flex: 10,
-   
   },
   navBG: {
     height: 103,
@@ -101,22 +106,26 @@ const styles = StyleSheet.create({
     elevation: 14,
   },
   navBtnMiddleView: {
+    marginTop: 7,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
   },
   numText: {
-    color: "white",
+    alignItems: "center",
+    justifyContent: "center",
     borderColor: "white",
     borderWidth: 2,
     width: 23,
-    textAlign: "center",
     borderRadius: 50,
     marginRight: 20,
     height: 23,
-    fontSize: 12,
     paddingVertical: 2,
     marginTop: 10,
+  },
+  numberTextInView: {
+    fontSize: 10,
+    color: "white",
   },
   navLink: {
     marginTop: 10,
@@ -126,7 +135,8 @@ const styles = StyleSheet.create({
     //  marginTop: 5
   },
   backBtn: {
-    marginRight: 20,
+    marginLeft: 15,
+    marginRight: 10,
     borderRadius: 50,
     backgroundColor: "#20B038",
     height: 42,
@@ -136,21 +146,20 @@ const styles = StyleSheet.create({
   },
   backView: {
     flexDirection: "row",
-    alignItems: 'center',
-    alignSelf: 'flex-end',
-    flex: 2
-   
+    alignItems: "center",
+    alignSelf: "flex-start",
+    flex: 2,
   },
   backText: {
     color: "#FFFFFF",
     fontSize: 20,
-    marginRight: 10
+    marginRight: 10,
   },
   noMSGtext: {
     color: "#FFFFFF",
     fontSize: 25,
     marginTop: 20,
-    textAlign: 'center'
-  }
+    textAlign: "center",
+  },
 });
 export default WaitingMsg;

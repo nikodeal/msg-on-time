@@ -13,10 +13,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import * as SMS from "expo-sms";
 const MessageItem = ({ item, navigation }) => {
   const { setMessageId } = useContext(AppContext);
-  const year = item.dateAndTimeToSend.slice(0, 4);
-  const month = item.dateAndTimeToSend.slice(5, 7);
-  const day = item.dateAndTimeToSend.slice(8, 10);
-  const time = item.dateAndTimeToSend.slice(11, 16);
+
 
 
 const messageLength = (message) =>{
@@ -34,16 +31,16 @@ const messageLength = (message) =>{
 }
   const sendRegularMessage = async () => {
     const sendMessage = await SMS.sendSMSAsync(
-      `0${item.sendToPhoneNumber}`,
-      `${item.message}`
+      `0${item.message_info.sendToPhoneNumber}`,
+      `${item.message_info.message}`
     );
   };
   const sendWhatsAppMessage = () => {
     let url =
       "whatsapp://send?text=" +
-      item.message +
+      item.message_info.message +
       "&phone=972" +
-      item.sendToPhoneNumber;
+      item.message_info.sendToPhoneNumber;
     Linking.openURL(url)
       .then((data) => {
         console.log("WhatsApp Opened");
@@ -57,7 +54,7 @@ const messageLength = (message) =>{
       <TouchableOpacity
         style={styles.editBtn}
         onPress={() => {
-          setMessageId(item._id);
+          setMessageId(item.message_id);
           navigation.push("Edit");
         }}
       >
@@ -77,12 +74,9 @@ const messageLength = (message) =>{
         </Text>
       </TouchableOpacity>
       <View style={styles.infoView}>
-        <Text style={styles.phoneNumInfo}>0{item.sendToPhoneNumber}</Text>
-        <Text style={styles.messageInfo}>{messageLength(item.message)}</Text>
-        <Text style={styles.dateInfo}>
-          בתאריך {day}/{month}/{year}
-        </Text>
-        <Text style={styles.dateInfo}>בשעה {time}</Text>
+        <Text style={styles.phoneNumInfo}>{item.message_info.sendToPhoneNumber}</Text>
+        <Text style={styles.messageInfo}>{messageLength(item.message_info.message)}</Text>
+       
       </View>
     </View>
   );

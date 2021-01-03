@@ -1,5 +1,6 @@
 import React, { createContext, useState } from "react";
-import axios from "axios";
+import { diffClamp } from "react-native-reanimated";
+import db from "../src/firebase";
 export const AppContext = createContext();
 
 const ContextProvider = (props) => {
@@ -10,38 +11,34 @@ const ContextProvider = (props) => {
   const [singleMsg, setSingleMsg] = useState(null);
   const [msgId, setMsgId] = useState("");
 
-  
+  const messagesRef = db.collection("messages");
+
   const getUserMessages = async () => {
-    try {
-      const result = await axios.get(
-        `https://msgontimeapi.herokuapp.com/${userNumber}`
-      );
-      setMessages(result.data);
-      setLoading(false);
-    } catch (err) {
-      console.log(err);
-    }
+    let msgArr = [],
+      msgObject = {};
+    const getMsgs = await messagesRef
+      .where("userPhoneNumber", "==", userNumber)
+      .get();
+    getMsgs.forEach((doc) => {
+      msgObject = {
+        message_id: doc.id,
+        message_info: doc.data(),
+      };
+      msgArr.push(msgObject);
+    });
+    setLoading(false);
+    setMessages(msgArr);
   };
   const getSingleMessage = async () => {
-    try {
-      const result = await axios.get(
-        `https://msgontimeapi.herokuapp.com/message/${msgId}`
-      );
-      setSingleMsg(result.data);
-      setLoadingForSingleMsg(false);
-    } catch (err) {
-      console.log(err);
-    }
+    const msg = await messagesRef.doc(msgId).get();
+    setLoadingForSingleMsg(false);
+    setSingleMsg(msg.data());
   };
-  const deleteSingleMsg = async () => {
-    try {
-      await axios.delete(
-        `https://msgontimeapi.herokuapp.com/message/${msgId}`
-      );
-      
-    } catch (err) {
-      console.log(err);
-    }
+  const updateMessage = async (form) => {
+    await messagesRef.doc(msgId).update(form);
+  };
+  const SaveMessageToDB = async (form) => {
+    await messagesRef.add(form);
   };
   const addUserNumber = (num) => {
     setUserNumber(num);
@@ -64,8 +61,9 @@ const ContextProvider = (props) => {
         singleMsg,
         loadingForSingleMsg,
         setSingleMsg,
-        deleteSingleMsg,
-    
+        setMessages,
+        updateMessage,
+        SaveMessageToDB,
       }}
     >
       {props.children}

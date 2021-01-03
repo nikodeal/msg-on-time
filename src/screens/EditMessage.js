@@ -21,13 +21,12 @@ const EditMessage = ({ navigation }) => {
     loadingForSingleMsg,
     setSingleMsg,
     deleteSingleMsg,
+    updateMessage
   } = useContext(AppContext);
   const [messageForm, setMessageForm] = useState({
     message: "",
-    dateAndTimeToSend: "",
   });
   const [dataBool, setDataBool] = useState(true);
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
   useEffect(() => {
     getSingleMessage();
@@ -35,47 +34,21 @@ const EditMessage = ({ navigation }) => {
       if (dataBool) {
         if (singleMsg && !loadingForSingleMsg) {
           setMessageForm(singleMsg);
+          setDataBool(false);
         }
-        setDataBool(false);
+        else{
+          setDataBool(true)
+        }
       }
     }, 2000);
+
+   
   }, [singleMsg]);
+
 
   const [error, setError] = useState(false);
 
-  const updateMessage = async (id) => {
-    const saveEditedMessage = {
-      sendToPhoneNumber: messageForm.sendToPhoneNumber,
-      message: messageForm.message,
-      dateAndTimeToSend: messageForm.dateAndTimeToSend,
-      active: messageForm.active,
-    };
-    try {
-      await axios.patch(
-        `https://msgontimeapi.herokuapp.com/message/${id}`,
-        saveEditedMessage
-      );
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const showDatePicker = () => {
-    setDatePickerVisibility(true);
-  };
-
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
-  };
-
-  const handleConfirm = (datetime) => {
-    setError(false);
-    setMessageForm({
-      ...messageForm,
-      dateAndTimeToSend: datetime,
-    });
-    hideDatePicker();
-  };
+ 
 
   return (
     <SafeAreaView>
@@ -85,7 +58,7 @@ const EditMessage = ({ navigation }) => {
             <View style={styles.AddMessageLayoutinner}>
               <Text style={styles.textTitle}>
                 {messageForm.sendToPhoneNumber
-                  ? `0${messageForm.sendToPhoneNumber}`
+                  ? `${messageForm.sendToPhoneNumber}`
                   : "05. ... ...."}
               </Text>
 
@@ -115,38 +88,21 @@ const EditMessage = ({ navigation }) => {
               {error && (
                 <Text style={styles.error}>נתונים שהוזנו אינם תקינים</Text>
               )}
-              <View style={styles.addContactView}>
-                <TouchableOpacity
-                  style={styles.calenderTouchable}
-                  onPress={showDatePicker}
-                >
-                  <Text style={styles.calenderTouchableText}> יומן </Text>
-                </TouchableOpacity>
-              </View>
+           
 
-              <DateTimePickerModal
-                isVisible={isDatePickerVisible}
-                mode="datetime"
-                minimumDate={new Date()}
-                minimumTime={new Date()}
-                onConfirm={handleConfirm}
-                onCancel={hideDatePicker}
-                is24Hour={true}
-                display="spinner"
-              />
+            
 
               <TouchableOpacity
                 style={styles.finishedTouchable}
                 onPress={() => {
-                  console.log(messageForm);
+                 
                   if (
-                    messageForm.sendToPhoneNumber.message < 3 &&
-                    messageForm.dateAndTimeToSend < 3
+                    messageForm.sendToPhoneNumber.message < 3
                   ) {
                     setError(true);
                   } else {
                     setError(false)
-                    updateMessage(messageForm._id);
+                    updateMessage(messageForm);
                     navigation.push("Waiting");
                   }
                 }}
@@ -284,7 +240,7 @@ const styles = StyleSheet.create({
     height: 45,
     borderRadius: 23,
     justifyContent: "center",
-    marginTop: -20,
+    marginTop: 10,
   },
   finishedTouchableText: {
     color: "white",

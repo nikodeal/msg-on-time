@@ -12,42 +12,18 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import axios from "axios";
 import { AntDesign } from "@expo/vector-icons";
 const AddMessage = ({ navigation }) => {
-  const { userNumber } = useContext(AppContext);
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const { userNumber, SaveMessageToDB } = useContext(AppContext);
+ 
   const [messageForm, setMessageForm] = useState({
     userPhoneNumber: userNumber,
     sendToPhoneNumber: "",
     message: "",
-    dateAndTimeToSend: "",
-    active: true,
+
   });
   const [error, setError] = useState(false);
-  const SaveMessageToDB = async () => {
-    try {
-      await axios
-        .post(`https://msgontimeapi.herokuapp.com/add`, messageForm)
-        
-    } catch (err) {
-      console.log(err);
-    }
-  };
+ 
 
-  const showDatePicker = () => {
-    setDatePickerVisibility(true);
-  };
 
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
-  };
-
-  const handleConfirm = (datetime) => {
-    setError(false);
-    setMessageForm({
-      ...messageForm,
-      dateAndTimeToSend: datetime,
-    });
-    hideDatePicker();
-  };
 
   return (
     <SafeAreaView>
@@ -93,48 +69,22 @@ const AddMessage = ({ navigation }) => {
             </View>
           </View>
           {error && <Text style={styles.error}>נתונים שהוזנו אינם תקינים</Text>}
-          <View style={styles.addContactView}>
-            <TouchableOpacity
-              style={styles.calenderTouchable}
-              onPress={showDatePicker}
-            >
-              <Text style={styles.calenderTouchableText}> יומן </Text>
-            </TouchableOpacity>
-          </View>
-
-          <DateTimePickerModal
-            isVisible={isDatePickerVisible}
-            mode="datetime"
-            minimumDate={new Date()}
-            minimumTime={new Date()}
-            onConfirm={handleConfirm}
-            onCancel={hideDatePicker}
-            is24Hour={true}
-            display="spinner"
-          />
+         
           <View>
             <TouchableOpacity
               style={styles.finishedTouchable}
               onPress={() => {
                 if (
-                  messageForm.sendToPhoneNumber.length === 10 &&
-                  messageForm.dateAndTimeToSend !== null
+                  messageForm.sendToPhoneNumber.length === 10 
                 ) {
-                    SaveMessageToDB();
-                    setMessageForm({
-                      userPhoneNumber: userNumber,
-                      sendToPhoneNumber: "",
-                      message: "",
-                      dateAndTimeToSend: "",
-                      active: true,
-                    });
-                    setError(false);
-                    navigation.push("Profile");
-                  
+                  SaveMessageToDB(messageForm);
+               
+                  setError(false);
+                  navigation.push("Profile");
                 } else {
                   setError(true);
-                
-              }}}
+                }
+              }}
             >
               <Text style={styles.finishedTouchableText}>סיימתי</Text>
             </TouchableOpacity>
@@ -211,7 +161,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
   },
   textBox: {
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
     width: 240,
     height: 150,
     color: "#707070",
@@ -237,7 +187,7 @@ const styles = StyleSheet.create({
     height: 45,
     borderRadius: 23,
     justifyContent: "center",
-    marginTop: -5,
+    marginTop: 10,
   },
   finishedTouchableText: {
     color: "white",
