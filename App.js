@@ -8,9 +8,11 @@ import AddMessage from "./src/screens/AddMessage";
 import EditMessage from "./src/screens/EditMessage";
 import ContextProvider from "./context/ContextProvider";
 import { LogBox } from "react-native";
+import InstantMessage from "./src/screens/InstantMessage";
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 LogBox.ignoreAllLogs(true)
 const Stack = createStackNavigator();
-
+const Tab = createBottomTabNavigator();
 const App = () => {
   return (
     <ContextProvider>
@@ -24,6 +26,11 @@ const App = () => {
           <Stack.Screen
             name="Profile"
             component={ProfileScreen}
+            options={{ headerShown: false }}
+          />
+             <Stack.Screen
+            name="InstantMsg"
+            component={InstantMessage}
             options={{ headerShown: false }}
           />
           <Stack.Screen
@@ -42,6 +49,7 @@ const App = () => {
             options={{ headerShown: false }}
           />
         </Stack.Navigator>
+ 
       </NavigationContainer>
     </ContextProvider>
   );

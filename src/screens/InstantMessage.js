@@ -6,42 +6,47 @@ import {
   SafeAreaView,
   StyleSheet,
   TextInput,
+  Linking,
 } from "react-native";
-import { AppContext } from "../../context/ContextProvider";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
-import axios from "axios";
+import * as SMS from "expo-sms";
 import { AntDesign } from "@expo/vector-icons";
-const AddMessage = ({ navigation }) => {
-  const { userNumber, SaveMessageToDB } = useContext(AppContext);
-
+import { FontAwesome } from "@expo/vector-icons";
+const InstantMessage = ({ navigation }) => {
   const [messageForm, setMessageForm] = useState({
-    draftName: "",
-    userPhoneNumber: userNumber,
     sendToPhoneNumber: "",
     message: "",
   });
   const [error, setError] = useState(false);
 
+
+  const sendRegularMessage = async () => {
+    await SMS.sendSMSAsync(
+      `0${messageForm.sendToPhoneNumber}`,
+      `${messageForm.message}`
+    );
+  };
+  const sendWhatsAppMessage = () => {
+    let url =
+      "whatsapp://send?text=" +
+      messageForm.message +
+      "&phone=972" +
+      messageForm.sendToPhoneNumber;
+    Linking.openURL(url)
+      .then((data) => {
+        console.log("WhatsApp Opened");
+      })
+      .catch(() => {
+        alert("Make sure Whatsapp installed on your device");
+      });
+  };
+
+
+
   return (
     <SafeAreaView>
       <View style={styles.AddMessageLayout}>
         <View style={styles.AddMessageLayoutinner}>
-          <Text style={styles.textTitle}>הזן שם לדראפט</Text>
-          <View style={styles.addContactView}>
-            <TextInput
-              style={styles.addContactBox}
-              maxLength={15}
-              onChangeText={(text) => {
-                setError(false);
-                setMessageForm({
-                  ...messageForm,
-                  draftName: text,
-                });
-              }}
-              value={messageForm.draftName}
-            />
-          </View>
-          <Text style={styles.textTitle}>הזן מספר איש קשר</Text>
+          <Text style={styles.textTitle}>הזן מספר טלפון</Text>
           <View style={styles.addContactView}>
             <TextInput
               style={styles.addContactBox}
@@ -82,23 +87,40 @@ const AddMessage = ({ navigation }) => {
           </View>
           {error && <Text style={styles.error}>נתונים שהוזנו אינם תקינים</Text>}
 
-          <View>
+          <View style={styles.sendMessageTo}>
             <TouchableOpacity
-              style={styles.finishedTouchable}
+              style={styles.msgBtn}
               onPress={() => {
                 if (
-                  messageForm.sendToPhoneNumber.length === 10
+                  messageForm.sendToPhoneNumber === 10 &&
+                  messageForm.message > 3
                 ) {
-                  SaveMessageToDB(messageForm);
-
-                  setError(false);
-                  navigation.push("Profile");
+                  sendWhatsAppMessage();
                 } else {
                   setError(true);
                 }
               }}
             >
-              <Text style={styles.finishedTouchableText}>סיימתי</Text>
+              <Text>
+                <FontAwesome name="whatsapp" size={30} color="white" />
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.msgBtn}
+              onPress={() => {
+                if (
+                  messageForm.sendToPhoneNumber.length === 10 &&
+                  messageForm.message.length > 3
+                ) {
+                  sendRegularMessage();
+                } else {
+                  setError(true);
+                }
+              }}
+            >
+              <Text>
+                <AntDesign name="message1" size={28} color="white" />
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -235,5 +257,20 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginRight: 10,
   },
+  sendMessageTo: {
+    marginTop: 30,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  msgBtn: {
+    backgroundColor: "#20B038",
+    borderRadius: 20,
+    height: 62,
+    width: 62,
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: 10,
+  },
 });
-export default AddMessage;
+export default InstantMessage;

@@ -14,21 +14,14 @@ import * as SMS from "expo-sms";
 const MessageItem = ({ item, navigation }) => {
   const { setMessageId } = useContext(AppContext);
 
-
-
-const messageLength = (message) =>{
-  if(message.length > 20){
-   const newMsg = message.slice(0,27)
-    return <Text>
-      {newMsg}...
-    </Text>
-  }else{
-    return <Text>
-    {message}
-  </Text>
-  }
-
-}
+  const messageLength = (message) => {
+    if (message.length > 20) {
+      const newMsg = message.slice(0, 27);
+      return <Text>{newMsg}...</Text>;
+    } else {
+      return <Text>{message}</Text>;
+    }
+  };
   const sendRegularMessage = async () => {
     const sendMessage = await SMS.sendSMSAsync(
       `0${item.message_info.sendToPhoneNumber}`,
@@ -74,9 +67,13 @@ const messageLength = (message) =>{
         </Text>
       </TouchableOpacity>
       <View style={styles.infoView}>
-        <Text style={styles.phoneNumInfo}>{item.message_info.sendToPhoneNumber}</Text>
-        <Text style={styles.messageInfo}>{messageLength(item.message_info.message)}</Text>
-       
+        <Text style={styles.phoneNumInfo}>{item.message_info.draftName}</Text>
+        <Text style={styles.phoneNumInfo}>
+          {item.message_info.sendToPhoneNumber}
+        </Text>
+        <Text style={styles.messageInfo}>
+          {messageLength(item.message_info.message)}
+        </Text>
       </View>
     </View>
   );
@@ -122,7 +119,7 @@ const styles = StyleSheet.create({
   },
   messageInfo: {
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: "700",
     color: "#FFFFFF",
   },
   dateInfo: {

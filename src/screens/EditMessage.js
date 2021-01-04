@@ -21,7 +21,7 @@ const EditMessage = ({ navigation }) => {
     loadingForSingleMsg,
     setSingleMsg,
     deleteSingleMsg,
-    updateMessage
+    updateMessage,
   } = useContext(AppContext);
   const [messageForm, setMessageForm] = useState({
     message: "",
@@ -35,20 +35,14 @@ const EditMessage = ({ navigation }) => {
         if (singleMsg && !loadingForSingleMsg) {
           setMessageForm(singleMsg);
           setDataBool(false);
-        }
-        else{
-          setDataBool(true)
+        } else {
+          setDataBool(true);
         }
       }
     }, 2000);
-
-   
   }, [singleMsg]);
 
-
   const [error, setError] = useState(false);
-
- 
 
   return (
     <SafeAreaView>
@@ -88,20 +82,14 @@ const EditMessage = ({ navigation }) => {
               {error && (
                 <Text style={styles.error}>נתונים שהוזנו אינם תקינים</Text>
               )}
-           
-
-            
 
               <TouchableOpacity
                 style={styles.finishedTouchable}
                 onPress={() => {
-                 
-                  if (
-                    messageForm.sendToPhoneNumber.message < 3
-                  ) {
+                  if (messageForm.sendToPhoneNumber.message < 3) {
                     setError(true);
                   } else {
-                    setError(false)
+                    setError(false);
                     updateMessage(messageForm);
                     navigation.push("Waiting");
                   }
@@ -121,7 +109,6 @@ const EditMessage = ({ navigation }) => {
               </TouchableOpacity>
             </View>
             <View style={styles.backView}>
-              <Text style={styles.backText}>חזור</Text>
               <TouchableOpacity
                 style={styles.backBtn}
                 onPress={() => {
@@ -138,6 +125,7 @@ const EditMessage = ({ navigation }) => {
                   <AntDesign name="right" size={24} color="white" />
                 </Text>
               </TouchableOpacity>
+              <Text style={styles.backText}>חזור</Text>
             </View>
           </>
         )}
@@ -256,7 +244,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   backBtn: {
-    marginRight: 20,
+    marginLeft: 15,
+    marginRight: 10,
     borderRadius: 50,
     backgroundColor: "#20B038",
     height: 42,
@@ -267,7 +256,7 @@ const styles = StyleSheet.create({
   backView: {
     flexDirection: "row",
     alignItems: "center",
-    alignSelf: "flex-end",
+    alignSelf: "flex-start",
     flex: 2,
   },
   backText: {

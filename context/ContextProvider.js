@@ -40,6 +40,9 @@ const ContextProvider = (props) => {
   const SaveMessageToDB = async (form) => {
     await messagesRef.add(form);
   };
+  const deleteSingleMsg = async () =>{
+    await messagesRef.doc(msgId).delete();
+  }
   const addUserNumber = (num) => {
     setUserNumber(num);
   };
@@ -64,6 +67,7 @@ const ContextProvider = (props) => {
         setMessages,
         updateMessage,
         SaveMessageToDB,
+        deleteSingleMsg
       }}
     >
       {props.children}
