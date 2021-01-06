@@ -9,11 +9,10 @@ import {
   TextInput,
 } from "react-native";
 import { AppContext } from "../../context/ContextProvider";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
-import axios from "axios";
-import { AntDesign } from "@expo/vector-icons";
-import { FontAwesome } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
 
+import { FontAwesome } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 const EditMessage = ({ navigation }) => {
   const {
     getSingleMessage,
@@ -49,42 +48,46 @@ const EditMessage = ({ navigation }) => {
       <View style={styles.AddMessageLayout}>
         {singleMsg && (
           <>
-            <View style={styles.AddMessageLayoutinner}>
-              <Text style={styles.textTitle}>
-                {messageForm.sendToPhoneNumber
-                  ? `${messageForm.sendToPhoneNumber}`
-                  : "05. ... ...."}
-              </Text>
+            <Text style={styles.title}>
+              {messageForm.sendToPhoneNumber
+                ? `${messageForm.draftName}`
+                : "שם הדראפט..."}
+            </Text>
+            <Text style={styles.textTitle}>
+              {messageForm.sendToPhoneNumber
+                ? `${messageForm.sendToPhoneNumber}`
+                : "05. ... ...."}
+            </Text>
 
-              <View style={styles.textBoxView}>
-                <Text style={styles.textSubTittle}>ערוך הודעה</Text>
-                <View style={styles.textBoxInnerView}>
-                  <TextInput
-                    style={styles.textBox}
-                    editable
-                    spellCheck
-                    multiline={true}
-                    maxLength={500}
-                    underlineColorAndroid="transparent"
-                    placeholder="טוען הודעה"
-                    placeholderTextColor="#00000029"
-                    onChangeText={(text) => {
-                      setError(false);
-                      setMessageForm({
-                        ...messageForm,
-                        message: text,
-                      });
-                    }}
-                    value={messageForm.message}
-                  />
-                </View>
+            <View style={styles.textBoxView}>
+              <Text style={styles.textTitle}>ערוך הודעה</Text>
+              <View style={styles.textBoxInnerView}>
+                <TextInput
+                  style={styles.textBox}
+                  editable
+                  spellCheck
+                  multiline={true}
+                  maxLength={500}
+                  underlineColorAndroid="transparent"
+                  placeholder="טוען הודעה"
+                  placeholderTextColor="#00000029"
+                  onChangeText={(text) => {
+                    setError(false);
+                    setMessageForm({
+                      ...messageForm,
+                      message: text,
+                    });
+                  }}
+                  value={messageForm.message}
+                />
               </View>
-              {error && (
-                <Text style={styles.error}>נתונים שהוזנו אינם תקינים</Text>
-              )}
-
+            </View>
+            {error && (
+              <Text style={styles.error}>נתונים שהוזנו אינם תקינים</Text>
+            )}
+            <View style={styles.sendMessageTo}>
               <TouchableOpacity
-                style={styles.finishedTouchable}
+                style={styles.msgBtn}
                 onPress={() => {
                   if (messageForm.sendToPhoneNumber.message < 3) {
                     setError(true);
@@ -95,44 +98,55 @@ const EditMessage = ({ navigation }) => {
                   }
                 }}
               >
-                <Text style={styles.finishedTouchableText}>סיימתי</Text>
+                <LinearGradient
+                  colors={["#59cea3", "#248f94", "#0f758f"]}
+                  style={styles.msgBtn}
+                  start={{ x: 0.7, y: 0 }}
+                >
+                  <Text>
+                    <Entypo name="check" size={30} color="white" />
+                  </Text>
+                </LinearGradient>
               </TouchableOpacity>
-
               <TouchableOpacity
-                style={styles.deleteBtnTouchable}
+                style={styles.msgBtn}
                 onPress={() => {
                   deleteSingleMsg();
                   navigation.push("Waiting");
                 }}
               >
-                <FontAwesome name="trash" size={25} color="white" />
+                <LinearGradient
+                  colors={["#59cea3", "#248f94", "#0f758f"]}
+                  style={styles.msgBtn}
+                  start={{ x: 0.7, y: 0 }}
+                >
+                  <Text>
+                    <FontAwesome name="trash" size={30} color="white" />
+                  </Text>
+                </LinearGradient>
               </TouchableOpacity>
             </View>
-            <View style={styles.backView}>
-              <TouchableOpacity
-                style={styles.backBtn}
-                onPress={() => {
-                  setSingleMsg(null);
-                  setMessageForm({
-                    ...messageForm,
-                    message: "loading message....",
-                    dateAndTimeToSend: "",
-                  });
-                  navigation.push("Waiting");
-                }}
-              >
-                <Text>
-                  <AntDesign name="right" size={24} color="white" />
-                </Text>
-              </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.backBtn}
+              onPress={() => {
+                setSingleMsg(null);
+                setMessageForm({
+                  ...messageForm,
+                  message: "loading message....",
+                  dateAndTimeToSend: "",
+                });
+                navigation.push("Waiting");
+              }}
+            >
               <Text style={styles.backText}>חזור</Text>
-            </View>
+            </TouchableOpacity>
           </>
         )}
         {loadingForSingleMsg && (
           <View style={styles.AddMessageLayout}>
             <Text>
-              <ActivityIndicator size="large" color="#20B038" />
+              <ActivityIndicator size="large" color="#59cea3" />
             </Text>
           </View>
         )}
@@ -142,61 +156,49 @@ const EditMessage = ({ navigation }) => {
 };
 const styles = StyleSheet.create({
   AddMessageLayout: {
-    backgroundColor: "#121212",
     height: "100%",
+    backgroundColor: "#121212",
     alignItems: "center",
-    justifyContent: "flex-start",
-    paddingTop: 50,
+    paddingTop: 70,
   },
-  AddMessageLayoutinner: {
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    flex: 10,
+  title: {
+    marginVertical: 10,
+    fontSize: 22,
+    color: "#0f758f",
+    fontWeight: "100",
+    letterSpacing: 2,
+    textAlign: "center",
   },
-  addContactView: {
-    flexDirection: "row",
-    alignItems: "center",
-    height: 70,
-    justifyContent: "center",
-    marginBottom: 30,
-  },
-
   textTitle: {
-    fontSize: 30,
-    color: "#FFFFFF",
-    textAlign: "center",
     marginVertical: 10,
-  },
-  textSubTittle: {
-    fontSize: 18,
-    color: "#FFFFFF",
+    fontSize: 14,
+    color: "white",
+    fontWeight: "100",
+    letterSpacing: 2,
     textAlign: "center",
-    marginVertical: 10,
   },
   addContactBox: {
-    height: 60,
     width: 266,
+    height: 40,
+    borderRadius: 5,
     borderColor: "#707070",
-    borderWidth: 1,
-    borderRadius: 15,
-
-    fontSize: 20,
-    backgroundColor: "#FFFFFF",
+    borderWidth: 1.5,
     textAlign: "center",
+    color: "#707070",
+    backgroundColor: "#FFFFFF",
   },
 
   textBoxView: {
-    marginBottom: 20,
     justifyContent: "flex-start",
     flexDirection: "column",
   },
   textBoxInnerView: {
     width: 266,
-    height: 150,
+    height: 100,
+    borderRadius: 5,
     borderColor: "#707070",
     borderWidth: 1,
-    borderRadius: 15,
+
     padding: 10,
     alignItems: "flex-start",
     backgroundColor: "#FFFFFF",
@@ -209,70 +211,46 @@ const styles = StyleSheet.create({
     writingDirection: "rtl",
   },
 
-  calenderTouchable: {
-    backgroundColor: "#707070",
-    width: 138,
-    height: 45,
-    borderRadius: 23,
-    justifyContent: "center",
-    marginTop: 10,
-  },
-  calenderTouchableText: {
-    color: "white",
-    fontSize: 20,
-    textAlign: "center",
-  },
-  finishedTouchable: {
-    backgroundColor: "#20B038",
-    width: 138,
-    height: 45,
-    borderRadius: 23,
-    justifyContent: "center",
-    marginTop: 10,
-  },
-  finishedTouchableText: {
-    color: "white",
-    fontSize: 20,
-    textAlign: "center",
-  },
   error: {
+    marginTop: 30,
     position: "relative",
-    fontSize: 16,
-    color: "red",
+    fontSize: 12,
+    color: "#59cea3",
     fontWeight: "100",
     letterSpacing: 2,
     textAlign: "center",
   },
   backBtn: {
-    marginLeft: 15,
-    marginRight: 10,
-    borderRadius: 50,
-    backgroundColor: "#20B038",
-    height: 42,
-    width: 42,
+    position: "absolute",
+    bottom: 10,
+    right: 10,
+    width: 40,
+    height: 30,
+    borderRadius: 5,
+    backgroundColor: "#121212",
+    borderColor: "#59cea3",
+    borderWidth: 1,
     justifyContent: "center",
     alignItems: "center",
   },
-  backView: {
-    flexDirection: "row",
-    alignItems: "center",
-    alignSelf: "flex-start",
-    flex: 2,
-  },
+
   backText: {
     color: "#FFFFFF",
-    fontSize: 20,
-    marginRight: 10,
+    fontSize: 14,
   },
-  deleteBtnTouchable: {
-    backgroundColor: "red",
-    width: 45,
-    height: 45,
-    borderRadius: 50,
-    justifyContent: "center",
-    marginTop: 15,
+  sendMessageTo: {
+    marginTop: 30,
+    flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
+  },
+  msgBtn: {
+    borderRadius: 5,
+    height: 50,
+    width: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    margin: 10,
   },
 });
 export default EditMessage;

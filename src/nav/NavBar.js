@@ -6,15 +6,16 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { AppContext } from "../../context/ContextProvider";
 const NavBar = ({ navigation }) => {
-  const { messages, getUserMessages,setMessages } = useContext(AppContext);
+  const { messages, getUserMessages, setMessages } = useContext(AppContext);
   useEffect(() => {
     getUserMessages();
 
-    return () =>{
-      setMessages([])
-    }
+    return () => {
+      setMessages([]);
+    };
   }, []);
   return (
     <SafeAreaView>
@@ -23,15 +24,20 @@ const NavBar = ({ navigation }) => {
           style={styles.navBtnMiddle}
           onPress={() => navigation.push("Waiting")}
         >
-          <View  style={styles.navBtnMiddleView}>
-          <View style={styles.numText}>
+          <LinearGradient
+            colors={["#59cea3", "#248f94", "#0f758f"]}
+            style={styles.navBtnMiddle}
+            start={{ x: 0.7, y: 0 }}
+          >
+            <View style={styles.navBtnMiddleView}>
+              <View style={styles.numText}>
                 <Text style={styles.numberTextInView}>
                   {messages ? messages.length : "0"}
                 </Text>
-              </View> 
-               <Text style={styles.navLink}>ממתינות לשילוח</Text>
-          </View>
-         
+              </View>
+              <Text style={styles.navLink}>ממתינות לשילוח</Text>
+            </View>
+          </LinearGradient>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -46,7 +52,7 @@ const styles = StyleSheet.create({
   navBtnMiddle: {
     width: "100%",
     height: 100,
-    backgroundColor: "#20B038",
+
     borderBottomLeftRadius: 22,
     borderBottomRightRadius: 22,
     shadowColor: "#00000029",
@@ -61,7 +67,7 @@ const styles = StyleSheet.create({
     shadowRadius: 9.11,
     elevation: 14,
   },
-  navBtnMiddleView:{
+  navBtnMiddleView: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",

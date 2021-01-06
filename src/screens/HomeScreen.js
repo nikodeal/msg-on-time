@@ -8,6 +8,8 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { AppContext } from "../../context/ContextProvider";
 import FadedIntroLogo from "../components/FadedIntroLogo";
@@ -18,8 +20,6 @@ const HomeScreen = ({ navigation }) => {
   const [phoneNum, setPhoneNum] = useState("");
   const [error, setError] = useState(false);
   const [isLogged, setIsLogged] = useState(false);
-
- 
 
   const saveUser = async (phoneNumber) => {
     try {
@@ -48,141 +48,153 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <>
-    
-          {isLogged ? (
-            <>
-              {active ? (
-                <View style={styles.bg}>
-                  <FadedIntroLogo setActive={setActive}>
-                    <Image
-                      style={styles.img}
-                      source={require("../../assets/logo.png")}
-                    />
-                  </FadedIntroLogo>
-                </View>
-              ) : (
-                <View style={styles.bg}>
-                  <Text style={styles.title}>{phoneNum}</Text>
-
-                  <TouchableOpacity
-                    style={styles.btnOpacity}
-                    onPress={(e) => {
-                      e.preventDefault();
-
-                      navigation.push("Profile");
-                    }}
-                  >
-                    <Text style={styles.btnOpacityText}>אישור</Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-            </>
+      {isLogged ? (
+        <>
+          {active ? (
+            <View style={styles.activeBG}>
+              <FadedIntroLogo setActive={setActive}>
+                <Image
+                  style={styles.logo}
+                  source={require("../../assets/draftLogo.png")}
+                />
+              </FadedIntroLogo>
+            </View>
           ) : (
-            <>
-              {active ? (
-                <View style={styles.bg}>
-                  <FadedIntroLogo setActive={setActive}>
-                    <Image
-                      style={styles.img}
-                      source={require("../../assets/logo.png")}
-                    />
-                  </FadedIntroLogo>
-                </View>
-              ) : (
-                <View style={styles.bg}>
-                  <Text style={styles.title}>הזן את המספר טלפון שלך</Text>
-                  <TextInput
-                  
-                   maxLength={10}
-                   keyboardType="numeric"
-                    style={styles.input}
-                    placeholder="הזן מספר טלפון"
-                    onChangeText={(text) => {
-                      setPhoneNum(text);
-                      setError(false);
-                    }}
-                    value={phoneNum}
-                  />
-                  <TouchableOpacity
-                    style={styles.btnOpacity}
-                    onPress={(e) => {
-                      e.preventDefault();
-                      console.log(phoneNum);
-                      if (phoneNum.length === 10) {
-                        for (let i = 0; i < phoneNum.length; i++) {
-                          if (phoneNum.indexOf(i) !== Number()) {
-                            setError(true);
-                            break;
-                          }
-                          setError(false)
-                          saveUser(phoneNum)
-                          navigation.push('Profile')
-                        }
-                      } else {
-                        setError(true);
-                      }
-                    }}
-                  >
-                    <Text style={styles.btnOpacityText}>סיימתי</Text>
-                  </TouchableOpacity>
-                  {error && (
-                    <Text style={styles.error}>מספר טלפון אינו תקין</Text>
-                  )}
-                </View>
-              )}
-            </>
+            <View style={styles.activeBG}>
+                <Image
+                  style={styles.img}
+                  source={require("../../assets/logo.png")}
+                />
+              <Text style={styles.title}>{phoneNum}</Text>
+
+              <TouchableOpacity
+                style={styles.btnOpacity}
+                onPress={(e) => {
+                  e.preventDefault();
+
+                  navigation.push("Profile");
+                }}
+              >
+                <Text style={styles.btnOpacityText}>אישור</Text>
+              </TouchableOpacity>
+            </View>
           )}
-   
+        </>
+      ) : (
+        <>
+          {active ? (
+            <View style={styles.activeBG}>
+              <FadedIntroLogo setActive={setActive}>
+                <Image
+                  style={styles.logo}
+                  source={require("../../assets/draftLogo.png")}
+                />
+              </FadedIntroLogo>
+            </View>
+          ) : (
+            <View style={styles.bg}>
+             
+              <Image
+                  style={styles.img}
+                  source={require("../../assets/logo.png")}
+                />
+                <Text style={styles.title}>הזן את המספר טלפון שלך</Text>
+                <TextInput
+                  maxLength={10}
+                  keyboardType="numeric"
+                  style={styles.input}
+                  placeholder="הזן מספר טלפון"
+                  onChangeText={(text) => {
+                    setPhoneNum(text);
+                    setError(false);
+                  }}
+                  value={phoneNum}
+                />
+              
+
+              <TouchableOpacity
+                style={styles.btnOpacity}
+                onPress={(e) => {
+                  e.preventDefault();
+                  if (phoneNum.length === 10) {
+                      setError(false);
+                      saveUser(phoneNum);
+                      navigation.push("Profile");
+                    
+                  } else {
+                    setError(true);
+                  }
+                }}
+              >
+                <Text style={styles.btnOpacityText}>סיימתי</Text>
+              </TouchableOpacity>
+              {error && <Text style={styles.error}>מספר טלפון אינו תקין</Text>}
+            </View>
+          )}
+        </>
+      )}
     </>
   );
 };
 
 const styles = StyleSheet.create({
+  activeBG:{
+    height: "100%",
+    backgroundColor: "#121212",
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
   bg: {
     height: "100%",
     backgroundColor: "#121212",
-    justifyContent: "center",
-    alignItems: "center",
+    alignItems: 'center',
+    padding: 40,
   },
   img: {
-    width: 330,
-    height: 330,
+    width: 350,
+    height: 100,
   },
+  logo:{
+    width: 350,
+    height: 350
+  },
+
   title: {
-  marginVertical: 10,
-    fontSize: 18,
-    color: "#FFFFFF",
+    marginVertical: 20,
+    fontSize: 14,
+    color: "white",
     fontWeight: "100",
     letterSpacing: 2,
+    textAlign: "center",
   },
   input: {
     marginVertical: 25,
     width: 266,
-    height: 60,
-    borderRadius: 15,
+    height: 40,
+    borderRadius: 5,
     borderColor: "#707070",
     borderWidth: 1.5,
     textAlign: "center",
-    color: '#707070',
+    color: "#707070",
     backgroundColor: "#FFFFFF",
   },
   btnOpacity: {
     width: 108,
     height: 45,
-    borderRadius: 35,
-    backgroundColor: "#20B038",
+    borderRadius: 5,
+    backgroundColor: "#0f758f",
     alignItems: "center",
     justifyContent: "center",
   },
   btnOpacityText: {
     color: "#FFFFFF",
-    fontSize: 18,
+    fontSize: 16,
   },
   error: {
     position: "relative",
     top: "5%",
-    fontSize: 16,
-    color: "red",
+    fontSize: 13,
+    color: "#59cea3",
     fontWeight: "100",
     letterSpacing: 2,
   },

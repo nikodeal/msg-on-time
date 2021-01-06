@@ -16,10 +16,10 @@ const ProfileScreen = ({ navigation }) => {
 
       <View style={styles.bgProfile}> 
          <View style={styles.innerProLayout}>
-           <Text style={styles.proTitle}>DRAFTIT</Text>
+           
           <Image
             style={styles.proImg}
-            source={require("../../assets/logo.png")}
+            source={require("../../assets/draftLogo.png")}
           />
         </View>
         <View style={styles.btnTabs}>
@@ -85,16 +85,19 @@ innerProLayout:{
 
   },
   finishedTouchable: {
-    backgroundColor: "#20B038",
+    backgroundColor: "#121212",
     width: 250,
-    height: 80,
-    borderRadius: 13,
+    height: 50,
+    borderRadius: 5,
     justifyContent: "center",
-    margin: 5
+    margin: 5,
+    borderColor: '#59cea3',
+    borderWidth: 1,
+
   },
   finishedTouchableText: {
     color: "white",
-    fontSize: 20,
+    fontSize: 15,
     textAlign: "center",
   
   },

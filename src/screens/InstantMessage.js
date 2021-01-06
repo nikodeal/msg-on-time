@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   Linking,
 } from "react-native";
 import * as SMS from "expo-sms";
+import { LinearGradient } from "expo-linear-gradient";
 import { AntDesign } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 const InstantMessage = ({ navigation }) => {
@@ -17,7 +18,6 @@ const InstantMessage = ({ navigation }) => {
     message: "",
   });
   const [error, setError] = useState(false);
-
 
   const sendRegularMessage = async () => {
     await SMS.sendSMSAsync(
@@ -40,144 +40,132 @@ const InstantMessage = ({ navigation }) => {
       });
   };
 
-
-
   return (
     <SafeAreaView>
       <View style={styles.AddMessageLayout}>
-        <View style={styles.AddMessageLayoutinner}>
-          <Text style={styles.textTitle}>הזן מספר טלפון</Text>
-          <View style={styles.addContactView}>
-            <TextInput
-              style={styles.addContactBox}
-              maxLength={10}
-              keyboardType="numeric"
-              onChangeText={(num) => {
-                setError(false);
-                setMessageForm({
-                  ...messageForm,
-                  sendToPhoneNumber: num,
-                });
-              }}
-              value={messageForm.sendToPhoneNumber}
-            />
-          </View>
-          <View style={styles.textBoxView}>
-            <Text style={styles.textTitle}>כתוב הודעה</Text>
-            <View style={styles.textBoxInnerView}>
-              <TextInput
-                style={styles.textBox}
-                editable
-                spellCheck
-                multiline={true}
-                maxLength={500}
-                underlineColorAndroid="transparent"
-                placeholder="כתוב הודעה"
-                placeholderTextColor="#00000029"
-                onChangeText={(text) => {
-                  setError(false);
-                  setMessageForm({
-                    ...messageForm,
-                    message: text,
-                  });
-                }}
-                value={messageForm.message}
-              />
-            </View>
-          </View>
-          {error && <Text style={styles.error}>נתונים שהוזנו אינם תקינים</Text>}
+        <Text style={styles.textTitle}>הזן מספר טלפון</Text>
 
-          <View style={styles.sendMessageTo}>
-            <TouchableOpacity
+        <TextInput
+          style={styles.addContactBox}
+          maxLength={10}
+          keyboardType="numeric"
+          onChangeText={(num) => {
+            setError(false);
+            setMessageForm({
+              ...messageForm,
+              sendToPhoneNumber: num,
+            });
+          }}
+          value={messageForm.sendToPhoneNumber}
+        />
+
+        <Text style={styles.textTitle}>כתוב הודעה</Text>
+        <View style={styles.textBoxInnerView}>
+          <TextInput
+            style={styles.textBox}
+            editable
+            spellCheck
+            multiline={true}
+            maxLength={500}
+            underlineColorAndroid="transparent"
+            placeholder="כתוב הודעה"
+            placeholderTextColor="#00000029"
+            onChangeText={(text) => {
+              setError(false);
+              setMessageForm({
+                ...messageForm,
+                message: text,
+              });
+            }}
+            value={messageForm.message}
+          />
+
+          {error && <Text style={styles.error}>נתונים שהוזנו אינם תקינים</Text>}
+        </View>
+        <View style={styles.sendMessageTo}>
+          <TouchableOpacity
+            style={styles.msgBtn}
+            onPress={() => {
+              if (
+                messageForm.sendToPhoneNumber === 10 &&
+                messageForm.message > 3
+              ) {
+                sendWhatsAppMessage();
+              } else {
+                setError(true);
+              }
+            }}
+          >
+            <LinearGradient
+              colors={["#59cea3", "#248f94", "#0f758f"]}
               style={styles.msgBtn}
-              onPress={() => {
-                if (
-                  messageForm.sendToPhoneNumber === 10 &&
-                  messageForm.message > 3
-                ) {
-                  sendWhatsAppMessage();
-                } else {
-                  setError(true);
-                }
-              }}
+              start={{ x: 0.7, y: 0 }}
             >
               <Text>
                 <FontAwesome name="whatsapp" size={30} color="white" />
               </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
+            </LinearGradient>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.msgBtn}
+            onPress={() => {
+              if (
+                messageForm.sendToPhoneNumber.length === 10 &&
+                messageForm.message.length > 3
+              ) {
+                sendRegularMessage();
+              } else {
+                setError(true);
+              }
+            }}
+          >
+            <LinearGradient
+              colors={["#59cea3", "#248f94", "#0f758f"]}
               style={styles.msgBtn}
-              onPress={() => {
-                if (
-                  messageForm.sendToPhoneNumber.length === 10 &&
-                  messageForm.message.length > 3
-                ) {
-                  sendRegularMessage();
-                } else {
-                  setError(true);
-                }
-              }}
+              start={{ x: 0.7, y: 0 }}
             >
               <Text>
                 <AntDesign name="message1" size={28} color="white" />
               </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View style={styles.backView}>
-          <TouchableOpacity
-            style={styles.backBtn}
-            onPress={() => navigation.push("Profile")}
-          >
-            <Text>
-              <AntDesign name="right" size={24} color="white" />
-            </Text>
+            </LinearGradient>
           </TouchableOpacity>
-          <Text style={styles.backText}>חזור</Text>
         </View>
+
+        <TouchableOpacity
+          style={styles.backBtn}
+          onPress={() => navigation.push("Profile")}
+        >
+          <Text style={styles.backText}>חזור</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
 };
 const styles = StyleSheet.create({
   AddMessageLayout: {
-    backgroundColor: "#121212",
     height: "100%",
+    backgroundColor: "#121212",
     alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "column",
-    paddingTop: 50,
-  },
-  AddMessageLayoutinner: {
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "column",
-    flex: 10,
-  },
-  addContactView: {
-    flexDirection: "row",
-    alignItems: "center",
-    height: 70,
-    justifyContent: "center",
-    marginBottom: 15,
+    paddingTop: 100,
   },
 
   textTitle: {
-    fontSize: 20,
-    color: "#FFFFFF",
+    marginVertical: 10,
+    fontSize: 14,
+    color: "white",
+    fontWeight: "100",
+    letterSpacing: 2,
     textAlign: "center",
-    marginBottom: 10,
   },
   addContactBox: {
-    height: 60,
     width: 266,
+    height: 40,
+    borderRadius: 5,
     borderColor: "#707070",
-    borderWidth: 1,
-    borderRadius: 15,
-
-    fontSize: 20,
-    backgroundColor: "#FFFFFF",
+    borderWidth: 1.5,
     textAlign: "center",
+    color: "#707070",
+    backgroundColor: "#FFFFFF",
   },
 
   textBoxView: {
@@ -186,10 +174,11 @@ const styles = StyleSheet.create({
   },
   textBoxInnerView: {
     width: 266,
-    height: 150,
+    height: 100,
+    borderRadius: 5,
     borderColor: "#707070",
     borderWidth: 1,
-    borderRadius: 15,
+
     padding: 10,
     alignItems: "flex-start",
     backgroundColor: "#FFFFFF",
@@ -202,60 +191,33 @@ const styles = StyleSheet.create({
     writingDirection: "rtl",
   },
 
-  calenderTouchable: {
-    backgroundColor: "#707070",
-    width: 138,
-    height: 45,
-    borderRadius: 23,
-    justifyContent: "center",
-    marginTop: 20,
-  },
-  calenderTouchableText: {
-    color: "white",
-    fontSize: 20,
-    textAlign: "center",
-  },
-  finishedTouchable: {
-    backgroundColor: "#20B038",
-    width: 138,
-    height: 45,
-    borderRadius: 23,
-    justifyContent: "center",
-    marginTop: 10,
-  },
-  finishedTouchableText: {
-    color: "white",
-    fontSize: 20,
-    textAlign: "center",
-  },
+
   error: {
     position: "relative",
-    fontSize: 16,
+    fontSize: 12,
     color: "red",
     fontWeight: "100",
     letterSpacing: 2,
     textAlign: "center",
   },
   backBtn: {
-    marginLeft: 15,
-    marginRight: 10,
-    borderRadius: 50,
-    backgroundColor: "#20B038",
-    height: 42,
-    width: 42,
+    position: "absolute",
+    bottom: 10,
+    right: 10,
+    width: 40,
+    height: 30,
+    borderRadius: 5,
+
+    backgroundColor: "#121212",
+    borderColor: '#59cea3',
+    borderWidth: 1,
     justifyContent: "center",
     alignItems: "center",
   },
-  backView: {
-    flexDirection: "row",
-    alignItems: "center",
-    alignSelf: "flex-start",
-    flex: 2,
-  },
+
   backText: {
     color: "#FFFFFF",
-    fontSize: 20,
-    marginRight: 10,
+    fontSize: 14,
   },
   sendMessageTo: {
     marginTop: 30,
@@ -264,13 +226,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   msgBtn: {
-    backgroundColor: "#20B038",
-    borderRadius: 20,
-    height: 62,
-    width: 62,
+    borderRadius: 5,
+    height: 50,
+    width: 50,
     justifyContent: "center",
     alignItems: "center",
-    marginLeft: 10,
+    margin: 10,
   },
 });
 export default InstantMessage;

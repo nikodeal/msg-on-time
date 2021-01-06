@@ -10,6 +10,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { AppContext } from "../../context/ContextProvider";
 import { AntDesign } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import * as SMS from "expo-sms";
 const MessageItem = ({ item, navigation }) => {
   const { setMessageId } = useContext(AppContext);
@@ -45,26 +46,44 @@ const MessageItem = ({ item, navigation }) => {
   return (
     <View style={styles.messageBG}>
       <TouchableOpacity
-        style={styles.editBtn}
+        style={styles.msgBtn}
         onPress={() => {
           setMessageId(item.message_id);
           navigation.push("Edit");
         }}
       >
-        <Text>
-          <MaterialIcons name="edit" size={24} color="white" />
-        </Text>
+        <LinearGradient
+          colors={["#59cea3", "#248f94", "#0f758f"]}
+          style={styles.msgBtn}
+          start={{ x: 0.7, y: 0 }}
+        >
+          <Text>
+            <MaterialIcons name="edit" size={24} color="white" />
+          </Text>
+        </LinearGradient>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.msgBtn} onPress={sendWhatsAppMessage}>
-        <Text>
-          <FontAwesome name="whatsapp" size={26} color="white" />
-        </Text>
+        <LinearGradient
+          colors={["#59cea3", "#248f94", "#0f758f"]}
+          style={styles.msgBtn}
+          start={{ x: 0.7, y: 0 }}
+        >
+          <Text>
+            <FontAwesome name="whatsapp" size={26} color="white" />
+          </Text>
+        </LinearGradient>
       </TouchableOpacity>
       <TouchableOpacity style={styles.msgBtn} onPress={sendRegularMessage}>
-        <Text>
-          <AntDesign name="message1" size={22} color="white" />
-        </Text>
+        <LinearGradient
+          colors={["#59cea3", "#248f94", "#0f758f"]}
+          style={styles.msgBtn}
+          start={{ x: 0.7, y: 0 }}
+        >
+          <Text>
+            <AntDesign name="message1" size={22} color="white" />
+          </Text>
+        </LinearGradient>
       </TouchableOpacity>
       <View style={styles.infoView}>
         <Text style={styles.phoneNumInfo}>{item.message_info.draftName}</Text>
@@ -88,17 +107,9 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderBottomColor: "#DFDFDF",
   },
-  editBtn: {
-    borderRadius: 50,
-    backgroundColor: "#20B038",
-    height: 42,
-    width: 42,
-    justifyContent: "center",
-    alignItems: "center",
-    marginLeft: 20,
-  },
+
   msgBtn: {
-    backgroundColor: "#20B038",
+ 
     borderRadius: 50,
     height: 42,
     width: 42,
@@ -114,17 +125,13 @@ const styles = StyleSheet.create({
     paddingRight: 20,
   },
   phoneNumInfo: {
-    fontSize: 18,
+    fontSize: 14,
     color: "#FFFFFF",
   },
   messageInfo: {
     fontSize: 12,
     fontWeight: "700",
-    color: "#FFFFFF",
-  },
-  dateInfo: {
-    fontSize: 13,
-    color: "#FFFFFF",
+    color: "#0f758f",
   },
 });
 export default MessageItem;

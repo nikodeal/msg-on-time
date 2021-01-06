@@ -10,6 +10,7 @@ import {
   ScrollView,
 } from "react-native";
 import { AppContext } from "../../context/ContextProvider";
+import { LinearGradient } from "expo-linear-gradient";
 import MessageItem from "../components/MessageItem";
 import { AntDesign } from "@expo/vector-icons";
 
@@ -23,21 +24,29 @@ const WaitingMsg = ({ navigation }) => {
 
   return (
     <>
-      <SafeAreaView>
-        <View style={styles.navBG}>
-          <View style={styles.navBtnMiddle}>
+       <SafeAreaView>
+      <View style={styles.navBG}>
+        <View
+          style={styles.navBtnMiddle}
+          
+        >
+          <LinearGradient
+            colors={["#59cea3", "#248f94", "#0f758f"]}
+            style={styles.navBtnMiddle}
+            start={{ x: 0.7, y: 0 }}
+          >
             <View style={styles.navBtnMiddleView}>
               <View style={styles.numText}>
                 <Text style={styles.numberTextInView}>
                   {messages ? messages.length : "0"}
                 </Text>
               </View>
-
               <Text style={styles.navLink}>ממתינות לשילוח</Text>
             </View>
-          </View>
+          </LinearGradient>
         </View>
-      </SafeAreaView>
+      </View>
+    </SafeAreaView>
       <View style={styles.screenBG}>
         <View style={styles.screenBGinner}>
           {messages !== 0 ? (
@@ -58,17 +67,15 @@ const WaitingMsg = ({ navigation }) => {
             <ActivityIndicator size="large" color="#00ff00" />
           </View>
         )}
-        <View style={styles.backView}>
+     
           <TouchableOpacity
             style={styles.backBtn}
             onPress={() => navigation.push("Profile")}
           >
-            <Text>
-              <AntDesign name="right" size={24} color="white" />
-            </Text>
-          </TouchableOpacity>
           <Text style={styles.backText}>חזור</Text>
-        </View>
+          </TouchableOpacity>
+        
+      
       </View>
     </>
   );
@@ -144,16 +151,24 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  backView: {
-    flexDirection: "row",
+  backBtn: {
+    position: "absolute",
+    bottom: 10,
+    right: 10,
+    width: 40,
+    height: 30,
+    borderRadius: 5,
+
+    backgroundColor: "#121212",
+    borderColor: '#59cea3',
+    borderWidth: 1,
+    justifyContent: "center",
     alignItems: "center",
-    alignSelf: "flex-start",
-    flex: 2,
   },
+
   backText: {
     color: "#FFFFFF",
-    fontSize: 20,
-    marginRight: 10,
+    fontSize: 14,
   },
   noMSGtext: {
     color: "#FFFFFF",

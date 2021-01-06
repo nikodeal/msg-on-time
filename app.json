@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "sup",
-    "slug": "sup",
+    "name": "DRAFTIT",
+    "slug": "draftit",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -28,7 +28,7 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "description": "schedule your messages for whatsapp and sms.",
+    "description": "DRAFT your messages for whatsapp and sms.",
     "githubUrl": "https://github.com/nikodeal/msg-on-time"
   }
 }
